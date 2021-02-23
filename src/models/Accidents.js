@@ -40,11 +40,12 @@ class Accidents {
             const vgeoapi = new VgeoAPI();//{ br , uf, data, km }
             //const connection = await this.connect(); 
             const data = "2021-02-23"
-            const result = await vgeoapi.coordenadas( { br , uf: PR, data, km  } );
+            const uf = "PR"
+            const result = await vgeoapi.coordenadas( br , uf, data, km );
             console.log(result)
 
             return result
-            
+
         } catch (err) {
             console.log(err)
             return err
@@ -101,7 +102,7 @@ class Accidents {
                 .find(this.fitParams(params))
                 .toArray()
 
-            return response;
+            return response
 
         } catch (error) {
             console.log(err)
