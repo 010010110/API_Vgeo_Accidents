@@ -34,15 +34,17 @@ class Accidents {
         }
     }
 
-    async getCoordinates(params) {
 
+    async getCoordinates(br , km) {
         try {
-            const vgeoapi = new VgeoAPI();
-            const connection = await this.connect();
+            const vgeoapi = new VgeoAPI();//{ br , uf, data, km }
+            //const connection = await this.connect(); 
+            const data = "2021-02-23"
+            const result = await vgeoapi.coordenadas( { br , uf: PR, data, km  } );
+            console.log(result)
 
-            const response = connection.find(params).toArray();
-
-            return response
+            return result
+            
         } catch (err) {
             console.log(err)
             return err
@@ -78,8 +80,7 @@ class Accidents {
                                     longitude: result.geometry.coordinates[0][0],
                                 }
                             });
-                        } mongo.close();
-
+                        }
                         return response
             });
         } catch (err) {
