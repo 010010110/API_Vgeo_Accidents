@@ -16,6 +16,15 @@ function delay(t, val) {
 
 class Accidents {
 
+    fitParams(params) {
+        if(params.data){
+            params.data = new Date(params.data);
+        }
+        //params.longitude = "";
+        return params;
+    }
+
+    //function call connet to Mongo
     async connect(){
         try{
             await mongo.connect();
@@ -23,13 +32,28 @@ class Accidents {
         } catch (err) {
             console.log(err)
         }
-        
     }
 
-    async getAccidents(params) {
+    async getCoordinates(params) {
+
         try {
             const vgeoapi = new VgeoAPI();
             const connection = await this.connect();
+
+            const response = connection.find(params).toArray();
+
+            return response
+        } catch (err) {
+            console.log(err)
+            return err
+        }
+    }
+
+    async getAccidents(params) {
+        try { 
+            const vgeoapi = new VgeoAPI();
+            const connection = await this.connect();
+
             const response = connection
                 .find(this.fitParams(params))
                 //.limit(2)
@@ -58,21 +82,34 @@ class Accidents {
 
                         return response
             });
-        } catch (error) {
+        } catch (err) {
             console.log(error)
+            console.log(err)
+            return err
         } finally {
            //console.log(dados._id);
-           await delay(2000);
         }
     }
 
-    fitParams(params) {
-        if(params.data){
-            params.data = new Date(params.data);
+    async getListAccidents(params) {
+        try {
+            //instancia mongo
+            const connection = await this.connect();
+            //query mongo
+            const response = connection
+                .find(this.fitParams(params))
+                .toArray()
+
+            return response;
+
+        } catch (error) {
+            console.log(err)
+            return err
+        } finally {
+
         }
-        //params.longitude = "";
-        return params;
     }
+
 }
 
 module.exports = Accidents;

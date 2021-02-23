@@ -8,5 +8,17 @@ routes.get('/accidents', async (req, res) => {
     res.send(response);
 });
 
+routes.get('/listaccidents', async (req, res) => {
+    const response = await new Accidents().getListAccidents(req.query);
+  
+    res.send(response);
+});
+
+routes.get('/searchCoordinates/:latitude&:longitude', async (req, res) => {
+    const response = await new Accidents().getCoordinates(req.query);
+  
+    res.send(response);
+});
+
 module.exports = routes;
 
