@@ -43,7 +43,6 @@ class Accidents {
             const uf = "PR"
             const result = await vgeoapi.coordenadas( br , uf, data, km );
             console.log(result)
-
             return result
 
         } catch (err) {
