@@ -14,7 +14,7 @@ routes.get('/listaccidents', async (req, res) => {
     res.send(response);
 });
 
-routes.get('/searchCoordinates/:br&km', async (req, res) => {
+routes.get('/searchCoordinates/:br&:km', async (req, res) => {
     const response = await new Accidents().getCoordinates(req.query);
   
     res.send(response);
