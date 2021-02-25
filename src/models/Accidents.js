@@ -20,7 +20,6 @@ class Accidents {
         if(params.data){
             params.data = new Date(params.data);
         }
-        //params.longitude = "";
         return params;
     }
 
@@ -38,12 +37,16 @@ class Accidents {
     async getCoordinates(br , km) {
         try {
             const vgeoapi = new VgeoAPI();//{ br , uf, data, km }
-            //const connection = await this.connect(); 
-            const data = "2021-02-23"
+            const data = "2021-2-23"
             const uf = "PR"
-            const result = await vgeoapi.coordenadas( br , uf, data, km );
+            const object = { br , uf, data, km }
+            const result = await vgeoapi.coordenadas( object );
             console.log(result)
-            return result
+
+            if(result){
+                return result
+            }else
+            return ("Erro ao conectar API")
 
         } catch (err) {
             console.log(err)
@@ -58,7 +61,6 @@ class Accidents {
 
             const response = connection
                 .find(this.fitParams(params))
-                //.limit(2)
                 .forEach(async (dados) => {
                         const { data } = dados;
                         dados.data = '2021-2-21';
@@ -80,11 +82,13 @@ class Accidents {
                                     longitude: result.geometry.coordinates[0][0],
                                 }
                             });
+                        }else{
+                            return ("Erro ao conectar API");
                         }
+
                         return response
             });
         } catch (err) {
-            console.log(error)
             console.log(err)
             return err
         } finally {
@@ -107,7 +111,7 @@ class Accidents {
             console.log(err)
             return err
         } finally {
-
+            //console.log('foda-se essa merda')
         }
     }
 
