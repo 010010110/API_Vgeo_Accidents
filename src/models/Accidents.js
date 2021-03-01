@@ -34,28 +34,23 @@ class Accidents {
     }
 
 
-    async getCoordinates(br , km) {
+    async getCoordinates({ br , km }) {
         try {
             const vgeoapi = new VgeoAPI();//{ br , uf, data, km }
-            const data = "2021-2-23"
-            const uf = "PR"
-            const object = { br , uf, data, km }
-            const result = await vgeoapi.coordenadas( object );
-            console.log(result)
+            const data = "2021-2-28";
+            const uf = "PR";
+            const object = { br , uf, data, km };
+            const { geometry: { coordinates } } = await vgeoapi.coordenadas( object );
 
-            if(result){
-                return result
-            }else
-            return ("Erro ao conectar API")
+            return coordinates
 
         } catch (err) {
-            console.log(err)
-            return err
+            return `erro getCoordinates ${err}`
         }
     }
 
     async getAccidents(params) {
-        try { 
+        try {
             const vgeoapi = new VgeoAPI();
             const connection = await this.connect();
 
@@ -65,15 +60,14 @@ class Accidents {
                         const { data } = dados;
                         dados.data = '2021-2-21';
                         const result = await vgeoapi.coordenadas(dados);
-                        console.log(result)
                         if(result){
 
                             // fs.writeFileSync("../coordinates.json", JSON.stringify(result)), (err) => {
                             //     if (err) {
                             //         console.error(err);
                             //         return;
-                            //     }; console.log("File has been created");
-                            
+                            // }; console.log("File has been created");
+
                             connection.updateOne({
                                 _id: ObjectId(dados._id)
                             }, {
@@ -82,6 +76,7 @@ class Accidents {
                                     longitude: result.geometry.coordinates[0][0],
                                 }
                             });
+
                         }else{
                             return ("Erro ao conectar API");
                         }
@@ -89,29 +84,23 @@ class Accidents {
                         return response
             });
         } catch (err) {
-            console.log(err)
-            return err
-        } finally {
-           //console.log(dados._id);
+            return `erro getAccidents ${err}`
         }
     }
 
     async getListAccidents(params) {
         try {
-            //instancia mongo
             const connection = await this.connect();
-            //query mongo
             const response = connection
-                .find(this.fitParams(params))
+                .aggregate([
+                    { $match: this.fitParams(params) },
+                    { $project: { _id: 0, latitude: 1, longitude: 1 } }
+                ])
                 .toArray()
-
             return response
 
-        } catch (error) {
-            console.log(err)
-            return err
-        } finally {
-            //console.log('foda-se essa merda')
+        } catch (err) {
+            return `erro getListAccidentes ${err}`
         }
     }
 
